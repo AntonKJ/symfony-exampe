@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Страница Новостей Guestbook{% endblock %}
+
+{% block body %}
+    <h2>Give your feedback!</h2>
+    <br><br>
+    {% if news|length > 0 %}
+
+            <div>There are {{ news|length }} news.</div>
+
+                {% for new in news %}
+                    <hr>
+                    <div class="new" style="display:block;">
+                    <h4>{{ new.title }}</h4>
+                    <p>{{ new.text }}</p>
+                    </div>
+                    <br>
+                {% endfor %}
+
+
+    {% else %}
+        <div>No comments have been posted yet for this news.</div>
+    {% endif %}
+{% endblock %}
