@@ -14,10 +14,6 @@ cat news.sql | docker exec -it mariadb /usr/bin/mysql -u root --password=rootpwd
 docker exec -it app su
 composer update
 ```
-```
-docker exec -it app su
-composer install
-```
 #==================#END#==================#
 
 #if not PDO Driver
