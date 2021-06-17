@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\RubricsRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -33,9 +35,15 @@ class Rubrics
     private $publishDate;
 
     /**
-     * @ORM\ManyToOne(targetEntity=News::class, inversedBy="sections")
+     * @ORM\ManyToMany(targetEntity=News::class, mappedBy="sections")
      */
-    private $news;
+    private $new;
+
+    public function __construct()
+    {
+        $this->new = new ArrayCollection();
+    }
+
 
     public function getId(): ?int
     {
@@ -78,20 +86,35 @@ class Rubrics
         return $this;
     }
 
-    public function getNews(): ?News
+    public function __toString(): string
     {
-        return $this->news;
+        return $this->name.' '.$this->publishDate;
     }
 
-    public function setNews(?News $news): self
+    /**
+     * @return Collection|News[]
+     */
+    public function getNew(): Collection
     {
-        $this->news = $news;
+        return $this->new;
+    }
+
+    public function addNew(News $new): self
+    {
+        if (!$this->new->contains($new)) {
+            $this->new[] = $new;
+            $new->addSection($this);
+        }
 
         return $this;
     }
 
-    public function __toString(): string
+    public function removeNew(News $new): self
     {
-        return $this->name.' '.$this->publishDate;
+        if ($this->new->removeElement($new)) {
+            $new->removeSection($this);
+        }
+
+        return $this;
     }
 }

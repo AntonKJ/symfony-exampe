@@ -35,11 +35,6 @@ class News
     private $statusId;
 
     /**
-     * @ORM\OneToMany(targetEntity=Rubrics::class, mappedBy="news")
-     */
-    private $sections;
-
-    /**
      * @ORM\Column(type="datetime")
      */
     private $publishDate;
@@ -49,10 +44,15 @@ class News
      */
     private $comments;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=Rubrics::class, inversedBy="new")
+     */
+    private $sections;
+
     public function __construct()
     {
-        $this->sections = new ArrayCollection();
         $this->comments = new ArrayCollection();
+        $this->sections = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -92,36 +92,6 @@ class News
     public function setStatusId(int $statusId): self
     {
         $this->statusId = $statusId;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|Rubrics[]
-     */
-    public function getSections(): Collection
-    {
-        return $this->sections;
-    }
-
-    public function addSection(Rubrics $section): self
-    {
-        if (!$this->sections->contains($section)) {
-            $this->sections[] = $section;
-            $section->setNews($this);
-        }
-
-        return $this;
-    }
-
-    public function removeSection(Rubrics $section): self
-    {
-        if ($this->sections->removeElement($section)) {
-            // set the owning side to null (unless already changed)
-            if ($section->getNews() === $this) {
-                $section->setNews(null);
-            }
-        }
 
         return $this;
     }
@@ -172,5 +142,29 @@ class News
     {
         return $this->title.' - '.$this->getText();
             //preg_replace('/[:|-|\s]/i', '_',$this->publishDate);
+    }
+
+    /**
+     * @return Collection|Rubrics[]
+     */
+    public function getSections(): Collection
+    {
+        return $this->sections;
+    }
+
+    public function addSection(Rubrics $section): self
+    {
+        if (!$this->sections->contains($section)) {
+            $this->sections[] = $section;
+        }
+
+        return $this;
+    }
+
+    public function removeSection(Rubrics $section): self
+    {
+        $this->sections->removeElement($section);
+
+        return $this;
     }
 }

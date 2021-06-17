@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: db
--- Время создания: Июн 16 2021 г., 18:16
+-- Время создания: Июн 17 2021 г., 16:29
 -- Версия сервера: 10.5.10-MariaDB-1:10.5.10+maria~focal
 -- Версия PHP: 7.4.20
 
@@ -53,7 +53,8 @@ CREATE TABLE `doctrine_migration_versions` (
 
 INSERT INTO `doctrine_migration_versions` (`version`, `executed_at`, `execution_time`) VALUES
 ('DoctrineMigrations\\Version20210616060124', '2021-06-16 06:05:20', 89),
-('DoctrineMigrations\\Version20210616060525', '2021-06-16 06:05:36', 21);
+('DoctrineMigrations\\Version20210616060525', '2021-06-16 06:05:36', 21),
+('DoctrineMigrations\\Version20210617160535', '2021-06-17 16:06:12', 105);
 
 -- --------------------------------------------------------
 
@@ -66,7 +67,7 @@ CREATE TABLE `news` (
   `title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `text` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
   `status_id` int(11) NOT NULL,
-  `publish_date` datetime NOT NULL DEFAULT current_timestamp()
+  `publish_date` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -81,12 +82,22 @@ INSERT INTO `news` (`id`, `title`, `text`, `status_id`, `publish_date`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Структура таблицы `news_rubrics`
+--
+
+CREATE TABLE `news_rubrics` (
+  `news_id` int(11) NOT NULL,
+  `rubrics_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Структура таблицы `rubrics`
 --
 
 CREATE TABLE `rubrics` (
   `id` int(11) NOT NULL,
-  `news_id` int(11) DEFAULT NULL,
   `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `publish_date` datetime NOT NULL
@@ -96,9 +107,9 @@ CREATE TABLE `rubrics` (
 -- Дамп данных таблицы `rubrics`
 --
 
-INSERT INTO `rubrics` (`id`, `news_id`, `name`, `title`, `publish_date`) VALUES
-(1, NULL, 'Facts', 'The rubrics name', '2020-10-10 17:05:24'),
-(2, NULL, 'Interactive', 'The rubrics name', '2020-10-10 17:05:24');
+INSERT INTO `rubrics` (`id`, `name`, `title`, `publish_date`) VALUES
+(1, 'Facts', 'The rubrics name', '2020-10-10 17:05:24'),
+(2, 'Interactive', 'The rubrics name', '2020-10-10 17:05:24');
 
 --
 -- Индексы сохранённых таблиц
@@ -124,11 +135,18 @@ ALTER TABLE `news`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Индексы таблицы `news_rubrics`
+--
+ALTER TABLE `news_rubrics`
+  ADD PRIMARY KEY (`news_id`,`rubrics_id`),
+  ADD KEY `IDX_88E3A9FB5A459A0` (`news_id`),
+  ADD KEY `IDX_88E3A9F53D89DD2` (`rubrics_id`);
+
+--
 -- Индексы таблицы `rubrics`
 --
 ALTER TABLE `rubrics`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `IDX_5F6A2679B5A459A0` (`news_id`);
+  ADD PRIMARY KEY (`id`);
 
 --
 -- AUTO_INCREMENT для сохранённых таблиц
@@ -163,10 +181,11 @@ ALTER TABLE `comments`
   ADD CONSTRAINT `FK_5F9E962AB5A459A0` FOREIGN KEY (`news_id`) REFERENCES `news` (`id`);
 
 --
--- Ограничения внешнего ключа таблицы `rubrics`
+-- Ограничения внешнего ключа таблицы `news_rubrics`
 --
-ALTER TABLE `rubrics`
-  ADD CONSTRAINT `FK_5F6A2679B5A459A0` FOREIGN KEY (`news_id`) REFERENCES `news` (`id`);
+ALTER TABLE `news_rubrics`
+  ADD CONSTRAINT `FK_88E3A9F53D89DD2` FOREIGN KEY (`rubrics_id`) REFERENCES `rubrics` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `FK_88E3A9FB5A459A0` FOREIGN KEY (`news_id`) REFERENCES `news` (`id`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
