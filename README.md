@@ -2,17 +2,18 @@
 EasyAdmin and News Page Preview
 
 Установка
-Распаковать src/easyAdmin/mk-symfony.tar.gz в src/easyAdmin/mk-symfony
+Выполнить ```docker-compose up -d``` из первой (корневой) папки mk-symfony
 
-Выполнить ```docker-compose up -d``` из корневой папки mk-symfony
+код проекта в src/easyAdmin/mk-symfony
 
 #Установка db mysql из корневой папки проекта
 ```
-cat news.sql | docker exec -it mariadb /usr/bin/mysql -u root --password=rootpwd6421 news
+cat news_db.sql | docker exec -it mariadb /usr/bin/mysql -u root --password=rootpwd6421 news
 ```
 ```
 docker exec -it app su
-composer update
+cd home/easyAdmin/mk-symfony
+composer install
 ```
 #==================#END#==================#
 
