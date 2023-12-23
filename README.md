@@ -1,4 +1,4 @@
-# mk-symfony
+# symfony
 EasyAdmin and News Page Preview
 
 Установка
